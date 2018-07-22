@@ -121,7 +121,7 @@ Author: Ewa Gasperowicz (@devnook)
       const worker = new Worker(url);
 
       const offscreen = document.querySelector('#canvas-worker').transferControlToOffscreen();
-      worker.postMessage({ msg: 'start', origin: location.origin, canvas: offscreen }, [offscreen]);
+      worker.postMessage({ msg: 'start', origin: location.href, canvas: offscreen }, [offscreen]);
       URL.revokeObjectURL(url); // cleanup
     })();
 

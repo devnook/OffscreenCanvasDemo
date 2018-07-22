@@ -135,7 +135,7 @@ Author: Ewa Gasperowicz (@devnook)
           if (workerStarted) {
             worker.postMessage({ msg: 'start'});
           } else {
-            worker.postMessage({ msg: 'start', origin: location.origin, canvas: offscreen }, [offscreen]);
+            worker.postMessage({ msg: 'start', origin: location.href, canvas: offscreen }, [offscreen]);
             workerStarted = true;
           }
         } else {
