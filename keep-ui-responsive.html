@@ -36,10 +36,10 @@ Author: Ewa Gasperowicz (@devnook)
       can also be used in web workers.
     </div>
     <nav>
-      <a href="/">Avoid jank</a>
-      <a href="/keep-ui-responsive.html" class="selected">Keep UI responsive</a>
-      <a href="/gain-cpu-time.html">Gain CPU time</a>
-      <a href="/use-in-worker.html">Use in Worker</a>
+      <a href="">Avoid jank</a>
+      <a href="keep-ui-responsive.html" class="selected">Keep UI responsive</a>
+      <a href="gain-cpu-time.html">Gain CPU time</a>
+      <a href="use-in-worker.html">Use in Worker</a>
     </nav>
   </header>
   <main class="supported">
@@ -135,7 +135,11 @@ Author: Ewa Gasperowicz (@devnook)
           if (workerStarted) {
             worker.postMessage({ msg: 'start'});
           } else {
-            worker.postMessage({ msg: 'start', origin: location.href, canvas: offscreen }, [offscreen]);
+            const urlParts = location.href.split('/');
+            if (urlParts[urlParts.length - 1].indexOf('.') !== -1) {
+              urlParts.pop();
+            }
+            worker.postMessage({ msg: 'start', origin: urlParts.join('/'), canvas: offscreen }, [offscreen]);
             workerStarted = true;
           }
         } else {
