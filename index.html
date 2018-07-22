@@ -1,0 +1,132 @@
+<!--
+Copyright 2018
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Ewa Gasperowicz (@devnook)
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Offscreen Canvas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>
+      OffscreenCanvas
+    </h1>
+    <div class="desc">
+      The OffscreenCanvas allows to create a canvas that can be rendered off screen. It
+      can also be used in web workers.
+    </div>
+    <nav>
+      <a href="/" class="selected">Avoid jank</a>
+      <a href="/keep-ui-responsive.html">Keep UI responsive</a>
+      <a href="/gain-cpu-time.html">Gain CPU time</a>
+      <a href="/use-in-worker.html">Use in Worker</a>
+    </nav>
+  </header>
+  <main>
+
+    <section class="support">Your browser does not support OffscreenCanvas.</section>
+
+    <section>
+      <p>
+        OffscreenCanvas lets you avoid animation jank caused by main thread event traffic
+      </p>
+      <p class="desc">
+        When you click "make busy" button, the animation on window canvas is
+        blocked, while OffscreenCanvas, running on a worker, still plays smoothly.
+      </p>
+      <button id="make-busy">Make me busy!</button>
+      <div id="busy">&nbsp;</div>
+
+    <div class="display">
+      <div>
+        <h1>
+          Canvas on main thread
+        </h1>
+        <canvas id="canvas-window" width="400" height="200"></canvas>
+      </div>
+      <div>
+        <h1>
+          Canvas on worker
+        </h1>
+        <canvas id="canvas-worker" width="400" height="200"></canvas>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="animation.js"></script>
+
+  <script type="script/worker" id="workerCode">
+    let animationWorker = null;
+    self.onmessage = function(e) {
+      switch (e.data.msg) {
+        case 'start':
+          if (!animationWorker) {
+            importScripts(e.data.origin + '/animation.js');
+            animationWorker = new Animation(e.data.canvas.getContext('2d'));
+          }
+          animationWorker.start();
+          break;
+        case 'stop':
+          animationWorker.stop();
+          break;
+      }
+    };
+  </script>
+
+  <script>
+    (async () => {
+
+      // Feature detect.
+      document.querySelector('main').classList.toggle(
+        'supported', ('OffscreenCanvas' in window));
+
+      document.querySelector('#make-busy').addEventListener('click', () => {
+        document.querySelector('#busy').innerText = 'Main thread working...';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            Animation.fibonacci(40);
+            document.querySelector('#busy').innerText = 'Done!';
+          });
+        })
+      });
+
+      const canvas = document.querySelector('#case1');
+      const animationWindow = new Animation(document.querySelector('#canvas-window').getContext('2d'));
+      animationWindow.start();
+
+      const workerCode = document.querySelector('#workerCode').textContent;
+      const blob = new Blob([workerCode], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
+      const worker = new Worker(url);
+
+      const offscreen = document.querySelector('#canvas-worker').transferControlToOffscreen();
+      worker.postMessage({ msg: 'start', origin: location.origin, canvas: offscreen }, [offscreen]);
+      URL.revokeObjectURL(url); // cleanup
+    })();
+
+
+  </script>
+</body>
+
+</html>

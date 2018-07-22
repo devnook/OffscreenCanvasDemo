@@ -1,0 +1,64 @@
+<!--
+Copyright 2018
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Ewa Gasperowicz (@devnook)
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Offscreen Canvas</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>
+        OffscreenCanvas
+      </h1>
+      <div class="desc">
+        The OffscreenCanvas allows to create a canvas that can be rendered off screen. It
+        can also be used in web workers.
+      </div>
+      <nav>
+        <a href="/">Avoid jank</a>
+        <a href="/keep-ui-responsive.html">Keep UI responsive</a>
+        <a href="/gain-cpu-time.html" class="selected">Gain CPU time</a>
+        <a href="/use-in-worker.html">Use in Worker</a>
+      </nav>
+    </header>
+    <main>
+      <section class="support">Your browser does not support OffscreenCanvas.</section>
+      <section>
+        <p>
+          Gain CPU time on each animation frame cycle by bypassing the document graphics update
+          (page compositing) code path. Note: this is true even when using OffscreenCanvas
+          on the main thread.
+        </p>
+        <p class="desc">
+          TBD
+        </p>
+      </section>
+    </main>
+  </body>
+  <script>
+    (() => {
+      // Feature detect.
+      document.querySelector('main').classList.toggle(
+        'supported', ('OffscreenCanvas' in window));
+    })();
+  </script>
+</html>

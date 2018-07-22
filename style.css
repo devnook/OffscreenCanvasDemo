@@ -1,0 +1,128 @@
+html {
+  /* Primary color */
+  --color-primary: #ffc107;
+  --color-primary-light: #fff350;
+  --color-primary-dark: #c79100;
+
+  /* Secondary color */
+  --color-secondary: #00b8d4;
+  --color-secondary-light: #62ebff;
+  --color-secondary-dark: #0088a3;
+
+  /* Text on colored background */
+  --text-on-primary-light: #000;
+  --text-on-primary-dark: #fff;
+  --text-on-secondary: #000;
+  --text-on-secondary-dark: #fff;
+
+  /* Background color */
+  --color-background-dark: #e1e2e1;
+  --color-background-light: #F5F5F6;
+
+  /* Text color */
+  --color-text: #444;
+  --color-text-vivid: #000;
+  --color-text-subtle: #bbb;
+}
+
+html,
+body {
+  background-color: var(--color-background-light);
+  font-family: Roboto, sans-serif;
+  margin: 0;
+}
+
+section {
+  padding: 1em;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+}
+
+.display {
+  justify-content: center;
+  display: flex;
+}
+
+.display div {
+  background-color: #fff;
+  margin: 1em;
+}
+
+button {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 2px;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  vertical-align: middle;
+  user-select: none;
+  box-sizing: border-box;
+  color: #00B8D4;
+}
+
+span {
+  display: block;
+}
+
+header>h1 {
+  background-color: var(--color-primary-dark);
+  color: var(--text-on-primary-dark);
+  margin: 0;
+  font-weight: normal;
+  padding: 1rem;
+}
+
+header .desc {
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
+  padding: 1rem;
+}
+
+header nav {
+  background-color: var(--color-primary-light);
+  color: var(--text-on-primary-light);
+  padding: 0 1rem;
+}
+
+nav a {
+  color: var(--text-on-primary-light);
+  text-decoration: none;
+  line-height: 3em;
+  height: 3em;
+  display: inline-block;
+  padding: 0 1rem;
+}
+
+nav a.selected {
+  border-bottom: 4px solid var(--color-secondary);
+
+}
+
+main section {
+  display: none;
+}
+
+main section.support {
+  display: block;
+}
+
+main.supported section {
+  display: block;
+}
+
+main.supported section.support {
+  display: none;
+}
+
+.desc {
+  color: #999;
+  font-style: italic;
+}
