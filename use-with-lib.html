@@ -36,10 +36,11 @@ Author: Ewa Gasperowicz (@devnook)
       can also be used in web workers.
     </div>
     <nav>
-      <a href="index.html" class="selected">Avoid jank</a>
+      <a href="index.html">Avoid jank</a>
       <a href="keep-ui-responsive.html">Keep UI responsive</a>
       <a href="gain-cpu-time.html">Gain CPU time</a>
-      <a href="use-with-lib.html">Use with a library</a>
+      <a href="use-with-lib.html" class="selected">Use with a library</a>
+    </nav>
   </header>
   <main>
 
@@ -47,7 +48,9 @@ Author: Ewa Gasperowicz (@devnook)
 
     <section>
       <p>
-        OffscreenCanvas lets you avoid animation jank caused by main thread event traffic
+        OffscreenCanvas can be used as a progressive enhancement, also with some of the leading graphic
+        libraries on the market like three.js.
+
       </p>
       <p class="desc">
         When you click "make busy" button, the animation on window canvas is
@@ -74,25 +77,28 @@ Author: Ewa Gasperowicz (@devnook)
   </main>
 
   <script src="animation.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/94/three.min.js"></script>
+  <script src="threejs-cube.js"></script>
 
   <script type="script/worker" id="workerCode">
-    let animationWorker = null;
+    let cube = null;
+
     self.onmessage = function(e) {
       switch (e.data.msg) {
         case 'start':
-          if (!animationWorker) {
-            importScripts(e.data.origin + '/animation.js');
-            animationWorker = new Animation(e.data.canvas.getContext('2d'));
+          if (!cube) {
+            importScripts('https://cdnjs.cloudflare.com/ajax/libs/three.js/94/three.min.js');
+            importScripts(e.data.origin + '/threejs-cube.js');
+            e.data.canvas.style = { width: 0, height: 0 }
+            const renderer = new THREE.WebGLRenderer({ canvas: e.data.canvas });
+            renderer.setSize(400, 200);
+            cube = new ThreejsCube(renderer);
           }
-          animationWorker.start();
-          break;
-        case 'stop':
-          animationWorker.stop();
+          cube.animate();
           break;
       }
     };
   </script>
-
   <script>
     (async () => {
 
@@ -104,31 +110,31 @@ Author: Ewa Gasperowicz (@devnook)
         document.querySelector('#busy').innerText = 'Main thread working...';
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            Animation.fibonacci(40);
+            Animation.fibonacci(40);  // Artificially slow down main thread.
             document.querySelector('#busy').innerText = 'Done!';
           });
         })
       });
 
-      const canvas = document.querySelector('#case1');
-      const animationWindow = new Animation(document.querySelector('#canvas-window').getContext('2d'));
-      animationWindow.start();
+      const canvasWindow = document.querySelector("#canvas-window");
+      const canvasOffscreen = document.querySelector("#canvas-worker").transferControlToOffscreen();
+      const renderer = new THREE.WebGLRenderer({ canvas: canvasWindow });
+      renderer.setSize(400, 200);
+      const cube = new ThreejsCube(renderer);
+      cube.animate();
 
       const workerCode = document.querySelector('#workerCode').textContent;
       const blob = new Blob([workerCode], { type: 'text/javascript' });
       const url = URL.createObjectURL(blob);
       const worker = new Worker(url);
-
-      const offscreen = document.querySelector('#canvas-worker').transferControlToOffscreen();
       const urlParts = location.href.split('/');
       if (urlParts[urlParts.length - 1].indexOf('.') !== -1) {
         urlParts.pop();
       }
-      worker.postMessage({ msg: 'start', origin: urlParts.join('/'), canvas: offscreen }, [offscreen]);
+
+      worker.postMessage({ msg: 'start', origin: urlParts.join('/'), canvas: canvasOffscreen }, [canvasOffscreen]);
       URL.revokeObjectURL(url); // cleanup
     })();
-
-
   </script>
 </body>
 
