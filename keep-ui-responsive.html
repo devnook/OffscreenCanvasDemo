@@ -55,9 +55,7 @@ Author: Ewa Gasperowicz (@devnook)
         If you click on the button at such moment, the interaction is blocked
         for a short while causing bad user experience.
       </p>
-      <button id="interactive" >Interact!</button>
-      <div>interactions: <span id="log">0</span></div>
-      <div id="status">&nbsp;</div>
+
       <div class="display">
         <div>
           <h1>Canvas on main thread</h1>
@@ -72,6 +70,11 @@ Author: Ewa Gasperowicz (@devnook)
           <canvas id="canvas-worker" width="400" height="400"></canvas>
         </div>
       </div>
+      <button id="interactive">Interact!</button>
+      <div>interactions:
+        <span id="log">0</span>
+      </div>
+      <div id="status">&nbsp;</div>
     </section>
   </main>
 
@@ -89,6 +92,9 @@ Author: Ewa Gasperowicz (@devnook)
           animationWorker.start();
           break;
         case 'stop':
+          if (!animationWorker) {
+            return;
+          }
           animationWorker.stop();
           break;
       }
@@ -101,6 +107,8 @@ Author: Ewa Gasperowicz (@devnook)
       document.querySelector('main').classList.toggle(
         'supported', ('OffscreenCanvas' in window));
 
+      const playWindowBtn = document.querySelector('#play-window');
+      const playWorkerBtn = document.querySelector('#play-worker');
       const workerCode = document.querySelector('#workerCode').textContent;
       const blob = new Blob([workerCode], { type: 'text/javascript' });
       const url = URL.createObjectURL(blob);
@@ -118,21 +126,25 @@ Author: Ewa Gasperowicz (@devnook)
         logBox.innerText = value;
       });
 
-      document.querySelector('#play-window').addEventListener('click', (e) => {
+      playWindowBtn.addEventListener('click', (e) => {
         runWindowAnimation = !runWindowAnimation;
         if (runWindowAnimation) {
           e.target.innerHTML = 'stop';
           animationWindow.start();
+          playWorkerBtn.innerHTML = 'play';
+          worker.postMessage({ msg: 'stop' });
         } else {
           e.target.innerHTML = 'play';
           animationWindow.stop();
         }
       });
 
-      document.querySelector('#play-worker').addEventListener('click', (e) => {
+      playWorkerBtn.addEventListener('click', (e) => {
         runWorkerAnimation = !runWorkerAnimation;
         if (runWorkerAnimation) {
-          e.target.innerHTML = 'stop';
+          playWorkerBtn.innerHTML = 'stop';
+          playWindowBtn.innerHTML = 'play';
+          animationWindow.stop();
           if (workerStarted) {
             worker.postMessage({ msg: 'start'});
           } else {
