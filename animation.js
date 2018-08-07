@@ -20,7 +20,7 @@ class Animation {
     this.ctx = ctx;
     this.x = ctx.canvas.width / 2;
     this.y = ctx.canvas.height / 2;
-    this.rMax = Math.min(this.x, this.y) - 20;
+    this.rMax = Math.min(this.x - 20, this.y - 20, 60);
     this.r = 40;
     this.grow = true;
     this.run = true;
@@ -103,7 +103,9 @@ class ThemedAnimation extends Animation {
       this.grow = !this.grow;
     };
     if (this.r === 1 && this.grow === false) {
-      this.ctx.fillText('Loading theme...', this.x, this.y);
+      this.ctx.fillText('Preparing theme... Thread busy', this.x - 60, this.ctx.canvas.height - 10);
+    } else {
+      this.ctx.fillText('UI interactive', this.x - 30, this.ctx.canvas.height - 10);
     }
     if (this.r === 0 && this.grow) {
       this.themeColors = (this.themeColors[0] === 'red') ? ['blue', 'green'] : ['red', 'gold'];
