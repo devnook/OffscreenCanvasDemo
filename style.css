@@ -68,10 +68,6 @@ button {
   color: #00B8D4;
 }
 
-span {
-  display: block;
-}
-
 header>h1 {
   background-color: var(--color-primary-dark);
   color: var(--text-on-primary-dark);
@@ -125,4 +121,61 @@ main.supported section.support {
 .desc {
   color: #999;
   font-style: italic;
+}
+
+/* Toggle */
+
+.lbl {
+  padding-left: 54px;
+  width: 150px;
+  display: block;
+  position: relative;
+  margin: auto;
+}
+.lbl:before {
+  content: '';
+  top: 0;
+  left: 0;
+  display: inline-block;
+  position: absolute;
+  display: block;
+  height: 20px;
+  width: 44px;
+  background: #898989;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.lbl:after {
+  position: absolute;
+  left: -2px;
+  top: -3px;
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border-radius: 100px;
+  background: #fff;
+  box-shadow: 0px 3px 3px rgba(0,0,0,0.05);
+  content: '';
+  transition: all 0.3s ease;
+}
+.lbl:active:after {
+  transform: scale(1.15, 0.85);
+}
+.cbx:checked ~ label:before {
+  background: #6fbeb5;
+}
+.cbx:checked ~ label:after {
+  left: 20px;
+  background: #179588;
+}
+.cbx:disabled ~ label:before {
+  background: #d5d5d5;
+  pointer-events: none;
+}
+.cbx:disabled ~ label:after {
+  background: #bcbdbc;
+}
+.hidden {
+  display: none;
 }

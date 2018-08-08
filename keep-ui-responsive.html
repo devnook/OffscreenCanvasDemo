@@ -55,26 +55,26 @@ Author: Ewa Gasperowicz (@devnook)
         If you click on the button at such moment, the interaction is blocked
         for a short while causing bad user experience.
       </p>
+      <p>
+        <input type="checkbox" id="play" class="cbx hidden"/>
+        <label for="play" id="play-label" class="lbl">Runs on main thread</label>
+      </p>
+      <p>
+        <button id="interactive">Interact! Counter: <span id="log">0</span></button>
+      </p>
 
       <div class="display">
         <div>
           <h1>Canvas on main thread</h1>
           <p>Interaction is blocked when a theme is loading</p>
-          <button id="play-window">Play</button>
           <canvas id="canvas-window" width="400" height="400"></canvas>
         </div>
         <div>
           <h1>Canvas on worker thread</h1>
           <p>Interaction works even if a theme is loading</p>
-          <button id="play-worker">Play</button>
           <canvas id="canvas-worker" width="400" height="400"></canvas>
         </div>
       </div>
-      <button id="interactive">Interact!</button>
-      <div>interactions:
-        <span id="log">0</span>
-      </div>
-      <div id="status">&nbsp;</div>
     </section>
   </main>
 
@@ -116,8 +116,6 @@ Author: Ewa Gasperowicz (@devnook)
 
       const animationWindow = new ThemedAnimation(document.querySelector('#canvas-window').getContext('2d'));
       const offscreen = document.querySelector('#canvas-worker').transferControlToOffscreen();
-      let runWindowAnimation = false;
-      let runWorkerAnimation = false;
       let workerStarted = false;
 
       document.querySelector('#interactive').addEventListener('click', () => {
@@ -126,27 +124,19 @@ Author: Ewa Gasperowicz (@devnook)
         logBox.innerText = value;
       });
 
-      playWindowBtn.addEventListener('click', (e) => {
-        runWindowAnimation = !runWindowAnimation;
-        if (runWindowAnimation) {
-          e.target.innerHTML = 'stop';
-          animationWindow.start();
-          playWorkerBtn.innerHTML = 'play';
-          worker.postMessage({ msg: 'stop' });
-        } else {
-          e.target.innerHTML = 'play';
-          animationWindow.stop();
-        }
+      const playBtn = document.querySelector('#play');
+      const playLabel = document.querySelector('#play-label');
+      playBtn.addEventListener('change', (e) => {
+        const inWorker = e.target.checked;
+        playLabel.innerHTML = inWorker ? 'Runs in worker' : 'Runs on main thread';
+        playAnimation(inWorker);
       });
 
-      playWorkerBtn.addEventListener('click', (e) => {
-        runWorkerAnimation = !runWorkerAnimation;
-        if (runWorkerAnimation) {
-          playWorkerBtn.innerHTML = 'stop';
-          playWindowBtn.innerHTML = 'play';
+      function playAnimation(inWorker) {
+        if (inWorker) {
           animationWindow.stop();
           if (workerStarted) {
-            worker.postMessage({ msg: 'start'});
+            worker.postMessage({ msg: 'start' });
           } else {
             const urlParts = location.href.split('/');
             if (urlParts[urlParts.length - 1].indexOf('.') !== -1) {
@@ -156,10 +146,11 @@ Author: Ewa Gasperowicz (@devnook)
             workerStarted = true;
           }
         } else {
-          e.target.innerHTML = 'play';
           worker.postMessage({ msg: 'stop' });
+          animationWindow.start();
         }
-      });
+      }
+      animationWindow.start();
     })()
   </script>
 </body>

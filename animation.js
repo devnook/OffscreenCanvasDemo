@@ -95,10 +95,10 @@ class ThemedAnimation extends Animation {
   }
 
   animate() {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     if (!this.run) {
       return;
     }
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     if (this.r === this.rMax || this.r === 0) {
       this.grow = !this.grow;
     };
