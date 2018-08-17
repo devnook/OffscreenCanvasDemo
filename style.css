@@ -32,6 +32,10 @@ body {
   margin: 0;
 }
 
+.iframe .hide-in-iframe {
+  display: none;
+}
+
 section {
   padding: 1em;
   text-align: center;

@@ -27,7 +27,7 @@ Author: Ewa Gasperowicz (@devnook)
 </head>
 
 <body>
-  <header>
+  <header class="hide-in-iframe">
     <h1>
       OffscreenCanvas
     </h1>
@@ -46,7 +46,7 @@ Author: Ewa Gasperowicz (@devnook)
     <section class="support">Your browser does not support OffscreenCanvas.</section>
 
     <section>
-      <p>
+      <p class="hide-in-iframe">
         OffscreenCanvas lets you avoid animation jank caused by main thread event traffic
       </p>
       <p class="desc">
@@ -99,6 +99,9 @@ Author: Ewa Gasperowicz (@devnook)
       // Feature detect.
       document.querySelector('main').classList.toggle(
         'supported', ('OffscreenCanvas' in window));
+
+      document.body.classList.toggle(
+        'iframe', (window.location != window.parent.location));
 
       document.querySelector('#make-busy').addEventListener('click', () => {
         document.querySelector('#busy').innerText = 'Main thread working...';

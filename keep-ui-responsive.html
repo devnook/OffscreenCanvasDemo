@@ -27,7 +27,7 @@ Author: Ewa Gasperowicz (@devnook)
 </head>
 
 <body>
-  <header>
+  <header class="hide-in-iframe">
     <h1>
       OffscreenCanvas
     </h1>
@@ -45,7 +45,7 @@ Author: Ewa Gasperowicz (@devnook)
   <main class="supported">
     <section class="support">Your browser does not support OffscreenCanvas.</section>
     <section>
-      <p>
+      <p class="hide-in-iframe">
         If an app has long running rendering tasks (e.g. ray tracing in WebGL), running those
         tasks in a worker allows the web app’s UI to remain responsive while the rendering
         task runs continuously in the background.
@@ -106,6 +106,9 @@ Author: Ewa Gasperowicz (@devnook)
       // Feature detect.
       document.querySelector('main').classList.toggle(
         'supported', ('OffscreenCanvas' in window));
+
+      document.body.classList.toggle(
+        'iframe', (window.location != window.parent.location));
 
       const playWindowBtn = document.querySelector('#play-window');
       const playWorkerBtn = document.querySelector('#play-worker');
